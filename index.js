@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 3000;
 const app = express();
 const cors = require('cors');
@@ -25,7 +25,8 @@ async function run() {
     await client.connect();
     const productCollection = client.db('tag').collection('products');
 
-    // >>>>>>>>>>>>> All Products EndPoint
+    // >>>>>>>>>>>>> All Products EndPoint <<<<><><><>
+
     app.get('/products', async (req, res) => {
       try {
         const result = await productCollection.find().toArray();
@@ -33,7 +34,18 @@ async function run() {
       } catch (error) {
         res.status(500).json({ error: 'Internal server error' });
       }
-
+    })
+    // product details with dynamic route
+    app.get('/product/:id', async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await productCollection.findOne(query);
+        res.send(result);
+      }
+      catch (error) {
+        res.status(500).json({ error: 'Internal Server Error' })
+      }
     })
 
 
