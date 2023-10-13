@@ -22,8 +22,20 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+    const productCollection = client.db('tag').collection('products');
+
+    // >>>>>>>>>>>>> All Products EndPoint
+    app.get('/products', async (req, res) => {
+      try {
+        const result = await productCollection.find().toArray();
+        res.send(result)
+      } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+
+    })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -37,11 +49,11 @@ run().catch(console.dir);
 
 
 // EndPoint
-app.get('/', (req,res)=>{
-    res.send('tag Server is Running')
+app.get('/', (req, res) => {
+  res.send('tag Server is Running')
 })
 
 
-app.listen(port, ()=>{
-    console.log(`hey dev! your Server is runing on port ${port}`);
+app.listen(port, () => {
+  console.log(`hey dev! your Server is runing on port ${port}`);
 })
