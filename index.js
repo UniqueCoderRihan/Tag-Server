@@ -41,12 +41,23 @@ async function run() {
         const id = req.params.id;
         const query = { _id: new ObjectId(id) };
         const result = await productCollection.findOne(query);
+        console.log(result);
         res.send(result);
       }
       catch (error) {
         res.status(500).json({ error: 'Internal Server Error' })
       }
     })
+
+    // Sorting High to Low
+    app.get('/products/sort/high-to-low', async (req, res) => {
+      try {
+        const result = await productCollection.find().sort({ price: -1 }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
 
 
     // Send a ping to confirm a successful connection
