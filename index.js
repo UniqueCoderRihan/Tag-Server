@@ -24,6 +24,7 @@ async function run() {
   try {
     await client.connect();
     const productCollection = client.db('tag').collection('products');
+    const usersCollection = client.db('tag').collection('users');
 
     // >>>>>>>>>>>>> All Products EndPoint <<<<><><><>
 
@@ -87,6 +88,18 @@ async function run() {
         res.send(result)
       }
       catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    })
+
+    // User Endpoint >>>>>>>
+    // User Post On Database.
+    app.post('/users', async (req, res) => {
+      try {
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        res.send(result)
+      } catch (error) {
         res.status(500).json({ error: 'Internal server error' })
       }
     })
