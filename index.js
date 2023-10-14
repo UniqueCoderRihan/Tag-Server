@@ -69,6 +69,27 @@ async function run() {
       }
     });
 
+    // Create Index by Search Text
+    const indexKeys = { productName: 1, category: 1 };
+    const indexOptions = { productName: 'productNamecategory' };
+    const result = await productCollection.createIndex(indexKeys, indexOptions);
+
+    app.get('/searched/:text', async (req, res) => {
+      try {
+        const searchText = req.params.text;
+
+        const result = await productCollection.find({
+          $or: [
+            { productName: { $regex: searchText, $options: "i" } },
+            { category: { $regex: searchText, $options: "i" } },
+          ],
+        }).toArray();
+        res.send(result)
+      } 
+      catch(error){
+        res.status(500).json({ error: 'Internal server error' })
+      }
+     })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
