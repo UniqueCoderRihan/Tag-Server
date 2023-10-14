@@ -116,6 +116,21 @@ async function run() {
       }
     })
 
+    // find User Product by Currrent User info
+    app.get('/my-product', async (req, res) => {
+      try {
+        let query = {};
+        if (req.query?.email) {
+          query = { sellerEmail: req.query?.email }
+        }
+        const result = await productCollection.find(query).toArray();
+        res.send(result)
+      }
+      catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
