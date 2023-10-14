@@ -131,6 +131,26 @@ async function run() {
       }
     })
 
+    // update Product >>>>>>>>>>>
+    app.post('/updateProduct', async (req, res) => {
+      const updatedProduct = req.body;
+
+      try {
+        const filter = { _id: updatedProduct._id };
+        const result = await productCollection.updateOne(filter, { $set: updatedProduct });
+
+        if (result.modifiedCount === 1) {
+          res.json({ acknowledged: true });
+        } else {
+          res.json({ acknowledged: false });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'An error occurred' });
+      }
+    });
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
