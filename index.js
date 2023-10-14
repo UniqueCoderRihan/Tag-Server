@@ -132,24 +132,27 @@ async function run() {
     })
 
     // update Product >>>>>>>>>>>
-    app.post('/updateProduct', async (req, res) => {
-      const updatedProduct = req.body;
-
+    app.put('/updateProduct', async (req, res) => {
       try {
-        const filter = { _id: updatedProduct._id };
+        const updatedProduct = req.body;
+        const productId = updatedProduct._id; // Store the _id separately
+        delete updatedProduct._id;
+    
+        const filter = { _id: new ObjectId(productId) };
         const result = await productCollection.updateOne(filter, { $set: updatedProduct });
-
+    
         if (result.modifiedCount === 1) {
           res.json({ acknowledged: true });
         } else {
-          res.json({ acknowledged: false });
+          res.status(400).json({ acknowledged: false, error: 'No product was updated.' });
         }
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'An error occurred' });
+        res.status(500).json({ acknowledged: false, error: error.message }); // Return the actual error message
       }
     });
-
+    
+    
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
