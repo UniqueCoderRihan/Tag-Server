@@ -152,6 +152,26 @@ async function run() {
       }
     });
     
+    // Product Delete
+    app.delete('/deleteProduct/:productId', async (req, res) => {
+      const productId = req.params.productId;
+  
+      try {
+          
+          const filter = { _id: new ObjectId(productId) };
+          const result = await productCollection.deleteOne(filter);
+  
+          if (result.deletedCount === 1) {
+              res.json({ acknowledged: true });
+          } else {
+              res.status(404).json({ acknowledged: false, error: 'Product not found' });
+          }
+      } catch (error) {
+          console.error(error);
+          res.status(500).json({ acknowledged: false, error: 'An error occurred while deleting the product' });
+      }
+  });
+  
     
 
     // Send a ping to confirm a successful connection
