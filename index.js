@@ -85,11 +85,23 @@ async function run() {
           ],
         }).toArray();
         res.send(result)
-      } 
-      catch(error){
+      }
+      catch (error) {
         res.status(500).json({ error: 'Internal server error' })
       }
-     })
+    })
+
+    //  >>>>>>>>>>>>>>>>>>>>>> Add Product >>>>>>>
+    app.post('/addProduct', async (req, res) => {
+      try {
+        const item = req.body;
+        const result = await productCollection.insertOne(item);
+        res.send(result)
+      }
+      catch (error) {
+        res.status(500).json({ error: 'Internal server error' })
+      }
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
