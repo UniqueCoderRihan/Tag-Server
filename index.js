@@ -59,6 +59,16 @@ async function run() {
       }
     });
 
+    // low to high shorting
+    app.get('/products/sort/low-to-high', async (req, res) => {
+      try {
+        const result = await productCollection.find().sort({ price: 1 }).toArray();
+        res.send(result);
+      } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
